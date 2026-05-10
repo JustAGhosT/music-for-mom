@@ -802,12 +802,11 @@ async fn get_my_playlists(state: State<'_, AppState>) -> Result<Vec<PlaylistInfo
     let mut page_token: Option<String> = None;
 
     loop {
-        let mut url = format!(
-            "https://www.googleapis.com/youtube/v3/playlists?\
+        let mut url = "https://www.googleapis.com/youtube/v3/playlists?\
             part=snippet,contentDetails&\
             mine=true&\
             maxResults=50"
-        );
+            .to_string();
 
         if let Some(token) = &page_token {
             url.push_str(&format!("&pageToken={}", token));
