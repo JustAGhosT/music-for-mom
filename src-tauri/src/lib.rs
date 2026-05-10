@@ -341,15 +341,19 @@ async fn download_audio(
     let mut child = Command::new("yt-dlp")
         .args([
             "-x",
-            "--audio-format", "mp3",
-            "--audio-quality", "0",
+            "--audio-format",
+            "mp3",
+            "--audio-quality",
+            "0",
             "--embed-thumbnail",
             "--add-metadata",
             "--no-overwrites",
             "--restrict-filenames",
             "--newline",
-            "--print", "%(title)s",
-            "-o", &output_template,
+            "--print",
+            "%(title)s",
+            "-o",
+            &output_template,
             &url,
         ])
         .stdout(Stdio::piped())
@@ -462,12 +466,15 @@ async fn download_audio(
             let auth = state.auth.lock().map_err(|e| e.to_string())?;
             let mut history = state.history.lock().map_err(|e| e.to_string())?;
 
-            history.insert(0, HistoryItem {
-                title: if title.is_empty() { url.clone() } else { title },
-                url: url.clone(),
-                timestamp: chrono_timestamp(),
-                output_dir: output_dir.clone(),
-            });
+            history.insert(
+                0,
+                HistoryItem {
+                    title: if title.is_empty() { url.clone() } else { title },
+                    url: url.clone(),
+                    timestamp: chrono_timestamp(),
+                    output_dir: output_dir.clone(),
+                },
+            );
 
             // Keep only last 50 items
             history.truncate(50);
@@ -540,14 +547,18 @@ async fn download_videos(
         let output = Command::new("yt-dlp")
             .args([
                 "-x",
-                "--audio-format", "mp3",
-                "--audio-quality", "0",
+                "--audio-format",
+                "mp3",
+                "--audio-quality",
+                "0",
                 "--embed-thumbnail",
                 "--add-metadata",
                 "--no-overwrites",
                 "--restrict-filenames",
-                "--print", "%(title)s",
-                "-o", &output_template,
+                "--print",
+                "%(title)s",
+                "-o",
+                &output_template,
                 &url,
             ])
             .output()
@@ -575,12 +586,15 @@ async fn download_videos(
         let mut history = state.history.lock().map_err(|e| e.to_string())?;
 
         for title in downloaded_titles {
-            history.insert(0, HistoryItem {
-                title,
-                url: "playlist".to_string(),
-                timestamp: chrono_timestamp(),
-                output_dir: output_dir.clone(),
-            });
+            history.insert(
+                0,
+                HistoryItem {
+                    title,
+                    url: "playlist".to_string(),
+                    timestamp: chrono_timestamp(),
+                    output_dir: output_dir.clone(),
+                },
+            );
         }
 
         history.truncate(50);
@@ -662,7 +676,10 @@ async fn start_oauth(state: State<'_, AppState>) -> Result<String, String> {
     let config = state.config.lock().map_err(|e| e.to_string())?;
 
     if config.client_id.is_empty() {
-        return Err("YouTube API not configured. Please add your Client ID and Secret in Settings.".to_string());
+        return Err(
+            "YouTube API not configured. Please add your Client ID and Secret in Settings."
+                .to_string(),
+        );
     }
 
     let auth_url = format!(
@@ -823,10 +840,7 @@ async fn get_my_playlists(state: State<'_, AppState>) -> Result<Vec<PlaylistInfo
                     .thumbnails
                     .and_then(|t| t.medium.or(t.default).or(t.high))
                     .map(|t| t.url),
-                video_count: item
-                    .content_details
-                    .and_then(|c| c.item_count)
-                    .unwrap_or(0),
+                video_count: item.content_details.and_then(|c| c.item_count).unwrap_or(0),
             });
         }
 
